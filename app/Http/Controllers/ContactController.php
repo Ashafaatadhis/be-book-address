@@ -23,11 +23,17 @@ class ContactController extends Controller
 
     public function store()
     {
-        $validated = request()->validate([
-            'name' => 'required|min:4|max:255',
-            'address' => 'required|min:4|max:255',
-            'phoneNumber' => 'required|max:255',
-        ]);
+        try {
+            request()->validate([
+                'name' => 'required|min:4|max:255',
+                'address' => 'required|min:4|max:255',
+                'phoneNumber' => 'required|max:255',
+            ]);
+        } catch (Exception $err) {
+
+            return response()->json(["success" => false, "error" =>  $err->getMessage()], 403);
+        }
+
 
         $data = Contact::create(request()->all());
         return response()->json(["success" => true, "data" =>  $data]);
@@ -35,11 +41,16 @@ class ContactController extends Controller
 
     public function update(string $id)
     {
-        $validated = request()->validate([
-            'name' => 'required|min:4|max:255',
-            'address' => 'required|min:4|max:255',
-            'phoneNumber' => 'required|max:255',
-        ]);
+        try {
+            request()->validate([
+                'name' => 'required|min:4|max:255',
+                'address' => 'required|min:4|max:255',
+                'phoneNumber' => 'required|max:255',
+            ]);
+        } catch (Exception $err) {
+
+            return response()->json(["success" => false, "error" =>  $err->getMessage()], 403);
+        }
         $dataId = Contact::where("id", $id)->update(request()->all());
         $data = Contact::where("id", $dataId)->first();
         return response()->json(["success" => true, "data" =>  $data]);
@@ -54,7 +65,13 @@ class ContactController extends Controller
 
     public function upload()
     {
-        $validated = request()->validate(['file' => 'required|mimes:json|max:2048']);
+        try {
+            request()->validate(['file' => 'required|mimes:json|max:2048']);
+        } catch (Exception $err) {
+
+            return response()->json(["success" => false, "error" =>  $err->getMessage()], 403);
+        }
+
 
         // Proses penyimpanan file ke folder lokal
         $file = request()->file('file');
